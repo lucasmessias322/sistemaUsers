@@ -1,6 +1,5 @@
 import React, { useContext } from 'react';
-import { Redirect, Switch, BrowserRouter, Route } from "react-router-dom";
-import { isAuthenticated } from "./Auth/auth";
+import { Redirect, Route } from "react-router-dom";
 import {AppContext} from './data/Store'
 
 const PrivateRoute = ({ component: Component, ...rest }) => {

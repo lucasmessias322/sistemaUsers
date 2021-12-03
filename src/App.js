@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React from "react";
 import Store from "./data/Store";
 import Routes from "./routes";
 

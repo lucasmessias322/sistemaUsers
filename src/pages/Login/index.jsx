@@ -3,51 +3,44 @@ import Input from "../../components/Input";
 import { postLogin } from "../../service/Api";
 import { AppContext } from "../../data/Store";
 import * as C from "../../styles/style";
-import { useHistory } from "react-router";
-
-function initialState() {
-  return { user: '', password: '' };
-}
-
-function autenticationLogin({user, password}) {
-  if (user === 'admin' && password === 'admin') {
-    return { token: '1234' };
-  }
-  return { error: 'Usuário ou senha inválido' };
-}
+import { useHistory } from "react-router-dom";
 
 function Login() {
-  const [values, setValues] = useState(initialState);
+  const [values, setValues] = useState({ email: "", password: "" });
   const [error, setError] = useState(null);
-  const { setToken } = useContext(AppContext);
+  const { token, setToken } = useContext(AppContext);
   const history = useHistory();
-
-  const [password, setPassword] = useState(String);
-  const [email, setEmail] = useState(String);
 
   function onChange(event) {
     const { value, name } = event.target;
 
     setValues({
       ...values,
-      [name]: value
+      [name]: value,
     });
   }
 
   function onSubmit(event) {
     event.preventDefault();
-
-    const { token, error } = autenticationLogin(values);
+    postLogin(values.email, values.password).then((response) =>
+      setToken(response.data.token)
+    );
 
     if (token) {
       setToken(token);
-      return history.push('/dashboard');
+      return history.push('/dashboard')
     }
 
     setError(error);
-    setValues(initialState);
+    setValues({ email: "", password: "" });
   }
 
+  useEffect(() => {
+    if (token) {
+      console.log("token é: " + token);
+      history.push('/dashboard')
+    }
+  }, [token]);
 
   return (
     <C.Container>
@@ -55,9 +48,9 @@ function Login() {
         <form onSubmit={onSubmit}>
           <Input
             type="email"
-            name="user"
+            name="email"
             onChange={onChange}
-            value={values.user}
+            value={values.email}
           />
           <Input
             type="text"
