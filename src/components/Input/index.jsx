@@ -14,6 +14,8 @@ function Input(props) {
       </div>
       <input
         required={true}
+        id={props.id}
+        name={props.name}
         value={props.value}
         onChange={props.onChange}
         type={props.Type}

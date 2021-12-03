@@ -3,40 +3,67 @@ import Input from "../../components/Input";
 import { postLogin } from "../../service/Api";
 import { AppContext } from "../../data/Store";
 import * as C from "../../styles/style";
+import { useHistory } from "react-router";
+
+function initialState() {
+  return { user: '', password: '' };
+}
+
+function autenticationLogin({user, password}) {
+  if (user === 'admin' && password === 'admin') {
+    return { token: '1234' };
+  }
+  return { error: 'Usuário ou senha inválido' };
+}
 
 function Login() {
-  const { status, setStatus } = useContext(AppContext);
+  const [values, setValues] = useState(initialState);
+  const [error, setError] = useState(null);
+  const { setToken } = useContext(AppContext);
+  const history = useHistory();
+
   const [password, setPassword] = useState(String);
   const [email, setEmail] = useState(String);
 
-  async function Login(e) {
-    e.preventDefault();
+  function onChange(event) {
+    const { value, name } = event.target;
 
-   await postLogin(email, password).then((response) => {
-      if (response.status === 200) {
-        console.log("Logado Status: " + response.status);
-        setStatus(response.status);
-      }
+    setValues({
+      ...values,
+      [name]: value
     });
-  };
-  
-  useEffect(() => {
-    console.log(status);
-  }, [status]);
+  }
+
+  function onSubmit(event) {
+    event.preventDefault();
+
+    const { token, error } = autenticationLogin(values);
+
+    if (token) {
+      setToken(token);
+      return history.push('/dashboard');
+    }
+
+    setError(error);
+    setValues(initialState);
+  }
+
 
   return (
     <C.Container>
       <C.FormContainer>
-        <form onSubmit={(e) => Login(e)}>
+        <form onSubmit={onSubmit}>
           <Input
             type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            name="user"
+            onChange={onChange}
+            value={values.user}
           />
           <Input
             type="text"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            name="password"
+            onChange={onChange}
+            value={values.password}
           />
 
           <C.ButtonSubmit>Enviar</C.ButtonSubmit>

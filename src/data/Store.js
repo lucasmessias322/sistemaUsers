@@ -1,4 +1,5 @@
 import React, { createContext, useState } from 'react'
+import useStorage from '../utils/useStorage';
 
 const initialState = {
     status: 0,
@@ -9,6 +10,7 @@ export const AppContext = createContext(initialState)
 
 function Store(props) {
     const [state, setState] = useState(initialState)
+    const [token, setToken] = useStorage('token')
 
     function updateState(key, value) {
         setState({
@@ -20,9 +22,10 @@ function Store(props) {
     return (
         <AppContext.Provider value={{
             status: state.status,
-            token: state.token,
+            token,
+            setToken,
             setStatus: status => updateState('status', status),
-            setToken: token => updateState('token', token)
+            
         }}>
 
             {props.children}
