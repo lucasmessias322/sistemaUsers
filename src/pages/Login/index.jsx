@@ -1,14 +1,16 @@
 import React, { useContext, useEffect, useState } from "react";
 import Input from "../../components/Input";
-import { postLogin } from "../../service/Api";
+import { postLogin} from "../../service/Api";
 import { AppContext } from "../../data/Store";
 import * as C from "../../styles/style";
-import { useHistory } from "react-router-dom";
+import { useHistory, Link } from "react-router-dom";
+import { ToastContainer, toast } from 'react-toastify';
+
 
 function Login() {
   const [values, setValues] = useState({ email: "", password: "" });
   const [error, setError] = useState(null);
-  const { token, setToken } = useContext(AppContext);
+  const { token, setToken, currentUserData,setCurrentUserData } = useContext(AppContext);
   const history = useHistory();
 
   function onChange(event) {
@@ -20,14 +22,17 @@ function Login() {
     });
   }
 
-  function onSubmit(event) {
+ async function onSubmit(event) {
     event.preventDefault();
-    postLogin(values.email, values.password).then((response) =>
-      setToken(response.data.token)
-    );
+
+    postLogin(values.email, values.password).then((response) => {
+         setToken(response.data.token)
+         setCurrentUserData(response.data.user)
+      });
 
     if (token) {
       setToken(token);
+      
       return history.push('/dashboard')
     }
 
@@ -38,25 +43,33 @@ function Login() {
   useEffect(() => {
     if (token) {
       console.log("token é: " + token);
+      console.log("currentUserData", currentUserData);
       history.push('/dashboard')
     }
   }, [token]);
 
+  
   return (
     <C.Container>
       <C.FormContainer>
         <form onSubmit={onSubmit}>
           <Input
+            User
             type="email"
             name="email"
             onChange={onChange}
             value={values.email}
+            require
+            placeholder="Digite seu email"
           />
           <Input
-            type="text"
+            Password
+            type="password"
             name="password"
             onChange={onChange}
             value={values.password}
+            require
+            placeholder="Digite sua senha"
           />
 
           <C.ButtonSubmit>Enviar</C.ButtonSubmit>
@@ -64,10 +77,11 @@ function Login() {
         <C.H4>
           Não possui uma conta?{" "}
           <span>
-            <a href="">REGISTER</a>
+            <Link to="/register">REGISTER</Link>
           </span>
         </C.H4>
       </C.FormContainer>
+      <ToastContainer />
     </C.Container>
   );
 }

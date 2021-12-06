@@ -2,8 +2,8 @@ import React, { createContext, useState } from 'react'
 import useStorage from '../utils/useStorage';
 
 const initialState = {
-    status: 0,
     token: "",
+    userdata: {}
 }
 
 export const AppContext = createContext(initialState)
@@ -11,6 +11,7 @@ export const AppContext = createContext(initialState)
 function Store(props) {
     const [state, setState] = useState(initialState)
     const [token, setToken] = useStorage('token')
+    const [currentUserData, setCurrentUserData] = useStorage('currentUserData')
 
     function updateState(key, value) {
         setState({
@@ -21,11 +22,11 @@ function Store(props) {
 
     return (
         <AppContext.Provider value={{
-            status: state.status,
             token,
             setToken,
-            setStatus: status => updateState('status', status),
-            
+            currentUserData,
+            setCurrentUserData,
+            setUserdata: userdata => updateState('userdata', userdata)   
         }}>
 
             {props.children}
