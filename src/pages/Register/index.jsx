@@ -2,13 +2,13 @@ import React, { useEffect } from "react";
 import { useState } from "react/cjs/react.development";
 import Input from "../../components/Input";
 import { postRegister } from "../../service/Api";
-import { useHistory, Link } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import * as C from "../../styles/style";
-import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer, toast } from "react-toastify";
 
 function Register() {
-  const history = useHistory();
-  const [response, setResponse] = useState({msg: "",userCriado: false});
+  const navigate = useNavigate();
+  const [response, setResponse] = useState({ msg: "", userCriado: false });
   const [values, setValues] = useState({
     name: "",
     email: "",
@@ -28,17 +28,19 @@ function Register() {
   function onSubmit(event) {
     event.preventDefault();
 
-    postRegister(values).then((response) => {
-      console.log(response.data);
-      setResponse(response.data);
-    }).catch(error => toast("Erro ao se registrar: " + error))
+    postRegister(values)
+      .then((response) => {
+        console.log(response.data);
+        setResponse(response.data);
+      })
+      .catch((error) => toast("Erro ao se registrar: " + error));
   }
 
   useEffect(() => {
     if (response.userCriado) {
-      return history.push("/");
+      return navigate("/");
     } else {
-      if(response.msg !== "") {
+      if (response.msg !== "") {
         toast(response.msg);
       }
     }
@@ -93,7 +95,7 @@ function Register() {
           </span>
         </C.H4>
       </C.FormContainer>
-      < ToastContainer theme="dark"/>
+      <ToastContainer theme="dark" />
     </C.Container>
   );
 }

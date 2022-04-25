@@ -5,18 +5,18 @@ import { AppContext } from "../../data/Store";
 import { config } from "../../service/Api";
 
 function DashBoard() {
-  const { token, setToken, currentUserData } = useContext(AppContext);
+  const { token, currentUserData } = useContext(AppContext);
 
   useEffect(() => {
-    
-    getUserdata("619d28618844a4acfa4a665a", config(token)).then(response => console.log(response))
+    getUserdata("619d28618844a4acfa4a665a", config(token)).then((response) =>
+      console.log(response)
+    );
   }, []);
-console.log(currentUserData);
- 
+  console.log(currentUserData);
+
   return (
     <C.Container>
       <h1>Meu Dashbord</h1>
-      
     </C.Container>
   );
 }

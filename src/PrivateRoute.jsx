@@ -1,22 +1,12 @@
 import React, { useContext } from 'react';
-import { Redirect, Route } from "react-router-dom";
+import { Navigate, Route } from "react-router-dom";
 import {AppContext} from './data/Store'
 
-const PrivateRoute = ({ component: Component, ...rest }) => {
+const PrivateRoute = ({ children, redirectTo }) => {
     const {token} = useContext(AppContext);
-
-    return (
-      <Route
-        {...rest}
-        render={(props) =>
-          token ? (
-            <Component {...props} />
-          ) : (
-            <Redirect to={{ pathname: "/", state: { from: props.location } }} />
-          )
-        }
-      />
-    );
+    const isAuthenticated = token
+    return isAuthenticated ? children : <Navigate to={redirectTo}/>
+    
   };
 
   export default PrivateRoute

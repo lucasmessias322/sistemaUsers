@@ -3,7 +3,7 @@ import Input from "../../components/Input";
 import { postLogin} from "../../service/Api";
 import { AppContext } from "../../data/Store";
 import * as C from "../../styles/style";
-import { useHistory, Link } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { ToastContainer, toast } from 'react-toastify';
 
 
@@ -11,7 +11,7 @@ function Login() {
   const [values, setValues] = useState({ email: "", password: "" });
   const [error, setError] = useState(null);
   const { token, setToken, currentUserData,setCurrentUserData } = useContext(AppContext);
-  const history = useHistory();
+  const navigate = useNavigate();
 
   function onChange(event) {
     const { value, name } = event.target;
@@ -33,7 +33,7 @@ function Login() {
     if (token) {
       setToken(token);
       
-      return history.push('/dashboard')
+      return navigate('/dashboard')
     }
 
     setError(error);
@@ -44,7 +44,7 @@ function Login() {
     if (token) {
       console.log("token é: " + token);
       console.log("currentUserData", currentUserData);
-      history.push('/dashboard')
+      navigate('/dashboard')
     }
   }, [token]);
 
